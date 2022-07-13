@@ -1,22 +1,32 @@
-import 'package:dio/dio.dart';
-import 'package:get_it/get_it.dart';
-import 'package:mobile_base/common/navigation.dart';
+import 'package:mobile_base/common/navigator/navigation.dart';
 import 'package:mobile_base/data/datasource/local/local_service.dart';
+import 'package:mobile_base/di/injector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../common/configs/build_config.dart';
+import '../common/networking/interceptor/auth_interceptor.dart';
+import '../common/networking/interceptor/logger_interceptor.dart';
+import '../common/networking/rest_client.dart';
 
 
 Future initializeDependencies() async {
-  Dio dio = Dio(BaseOptions(baseUrl: 'baseURL'));
 
-  dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+  /// [Shared]
+  sl.registerSingleton(await SharedPreferences.getInstance());
 
-  GetIt.instance.registerSingleton(dio);
+  /// [LocalService]
+  sl.registerSingleton(LocalService());
 
-  GetIt.instance.registerLazySingleton(() => Navigation());
+  /// [RestClient]
+  sl.registerLazySingleton(
+          () => RestClient(sl<BuildConfigs>().url(), interceptors: [
+            LoggerInterceptor(),
+        AuthInterceptor(),
+      ]));
 
-  GetIt.instance.registerSingleton(await SharedPreferences.getInstance());
+  /// [Navigation]
+  sl.registerLazySingleton<Navigation>(() => NavigationImpl());
 
-  GetIt.instance.registerSingleton(LocalService());
 
 
 

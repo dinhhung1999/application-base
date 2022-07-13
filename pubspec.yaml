@@ -16,7 +16,7 @@ dependencies:
   json_annotation:
 
   # Http Client
-  dio:
+  dio: 4.0.6
 
   #Svg Loader
   flutter_svg:
@@ -33,6 +33,7 @@ dependencies:
   # Collections and utilities functions and classes related to collections.
   collection: ^1.15.0
 
+  pretty_dio_logger:
 
 dev_dependencies:
   flutter_test:
